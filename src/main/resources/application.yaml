@@ -5,11 +5,16 @@ spring:
     web-application-type: none
     banner-mode: off
 
+  output:
+    ansi:
+      enabled: ALWAYS
+
   ai:
     ollama:
       base-url: http://localhost:11434
       chat:
         think: false
+        temperature: 0.2
         model: qwen3.5:4b
 
 logging:

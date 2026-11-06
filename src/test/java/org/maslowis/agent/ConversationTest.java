@@ -5,100 +5,76 @@ import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.UserMessage;
+
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 
 class ConversationTest {
 
+    public static final String SYSTEM_PROMPT = "You are a helpful assistant.";
+
     @Test
-    void testConversationWithSystemPromptAndMessageOrder() {
-        String systemPrompt = "You are a helpful assistant.";
-        Conversation conversation = new Conversation(systemPrompt);
+    void testConversationWithSystemPrompt() {
+        Conversation conversation = new Conversation(SYSTEM_PROMPT);
+        List<Message> promptMessages = conversation.toPromptMessages();
+        assertNotNull(promptMessages);
+        assertEquals(1, promptMessages.size());
+        assertEquals(SYSTEM_PROMPT, promptMessages.getFirst().getText());
+    }
 
-        // Проверяем системный промпт
-        assertNotNull(conversation.getSystemMessage());
-        assertEquals("You are a helpful assistant.", conversation.getSystemMessage().getText());
-
-        Message[] expectedMessages = new Message[] {
-                new SystemMessage("You are a helpful assistant."),
+    @Test
+    void extracted() {
+        Message[] expectedMessages = new Message[]{
+                new SystemMessage(SYSTEM_PROMPT),
                 new UserMessage("Hello"),
                 new AssistantMessage("Hi there!")
         };
-
-        // Добавляем сообщения пользователя и ассистента
+        Conversation conversation = new Conversation(SYSTEM_PROMPT);
         conversation.addUserMessage("Hello");
         conversation.addAssistantMessage(new AssistantMessage("Hi there!"));
 
         Message[] actualMessages = conversation.toPromptMessages().toArray(new Message[0]);
-        
+
         assertEquals(expectedMessages.length, actualMessages.length);
-        
-        // Проверяем порядок сообщений
         assertArrayEquals(expectedMessages, actualMessages, "Порядок и типы сообщений не совпадают");
     }
 
     @Test
     void testMessageOrderInPromptMessages() {
-        String systemPrompt = "You are a coding assistant.";
-        Conversation conversation = new Conversation(systemPrompt);
+        Conversation conversation = new Conversation(SYSTEM_PROMPT);
 
-        // Добавляем сообщение пользователя
-        conversation.addUserMessage("What is the capital of France?");
-        // Добавляем ответ модели
-        conversation.addAssistantMessage(new AssistantMessage("Paris"));
-
-        // Проверяем формат сообщений для prompting
-        var promptMessages = conversation.toPromptMessages();
-
-        // 1. Сначала должен быть системный промпт
-        assertTrue(promptMessages.get(0) instanceof SystemMessage);
-        assertEquals("You are a coding assistant.", promptMessages.get(0).getText());
-
-        // 2. Потом сообщение пользователя
-        var userMsg = (UserMessage) promptMessages.get(1);
-        assertEquals("What is the capital of France?", userMsg.getText());
-
-        // 3. И ответ ассистента
-        var assistantMsg = (AssistantMessage) promptMessages.get(2);
-        assertEquals("Paris", assistantMsg.getText());
-    }
-
-    @Test
-    void testComplexConversation() {
-        String systemPrompt = "You are a helpful coding agent.";
-        Conversation conversation = new Conversation(systemPrompt);
-
-        // Добавляем несколько раундов диалога
         conversation.addUserMessage("Help me understand Java");
         conversation.addAssistantMessage(new AssistantMessage("Java is a powerful object-oriented language."));
 
         conversation.addUserMessage("What is its memory management?");
         conversation.addAssistantMessage(new AssistantMessage("Java uses automatic garbage collection."));
 
-        // Проверяем полный порядок в promptMessages
         var promptMessages = conversation.toPromptMessages();
 
-        assertEquals(5, promptMessages.size(), "Системный промпт + 2 раунда диалога (4 сообщения)");
+        assertEquals(5, promptMessages.size());
 
         int idx = 0;
-        
-        // Системный промпт всегда первый
-        assertTrue(promptMessages.get(idx) instanceof SystemMessage);
 
-        // Первый раунд: пользователь
-        var firstUser = (UserMessage) promptMessages.get(++idx);
+        Message sysMsg = promptMessages.get(idx);
+        assertInstanceOf(SystemMessage.class, sysMsg);
+        assertEquals(SYSTEM_PROMPT, sysMsg.getText());
+
+        var firstUser = promptMessages.get(++idx);
+        assertInstanceOf(UserMessage.class, firstUser);
         assertEquals("Help me understand Java", firstUser.getText());
 
-        // Первый раунд: ассистент
-        var firstAssistant = (AssistantMessage) promptMessages.get(++idx);
-        assertTrue(firstAssistant.getText().contains("Java is a powerful object-oriented language"));
+        var firstAssistant = promptMessages.get(++idx);
+        assertInstanceOf(AssistantMessage.class, firstAssistant);
+        assertEquals("Java is a powerful object-oriented language.", firstAssistant.getText());
 
-        // Второй раунд: пользователь
-        var secondUser = (UserMessage) promptMessages.get(++idx);
+        var secondUser = promptMessages.get(++idx);
+        assertInstanceOf(UserMessage.class, secondUser);
         assertEquals("What is its memory management?", secondUser.getText());
 
-        // Второй раунд: ассистент
-        var secondAssistant = (AssistantMessage) promptMessages.get(++idx);
-        assertTrue(secondAssistant.getText().contains("Java uses automatic garbage collection"));
+        var secondAssistant = promptMessages.get(++idx);
+        assertInstanceOf(AssistantMessage.class, secondAssistant);
+        assertEquals("Java uses automatic garbage collection.", secondAssistant.getText());
     }
 }

@@ -1,6 +1,5 @@
 package org.maslowis.agent;
 
-import lombok.Data;
 import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.SystemMessage;
@@ -9,7 +8,6 @@ import org.springframework.ai.chat.messages.UserMessage;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
 public class Conversation {
 
     private final SystemMessage systemMessage;
