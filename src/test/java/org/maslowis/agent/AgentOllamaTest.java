@@ -1,13 +1,14 @@
 package org.maslowis.agent;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-//@EnabledIfSystemProperty(named = "spring.profiles.active", matches = "integration-test")
+@EnabledIfSystemProperty(named = "spring.profiles.active", matches = "integration-test")
 public class AgentOllamaTest {
 
     @Autowired

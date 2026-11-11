@@ -1,6 +1,8 @@
 spring:
+
   application:
     name: ai_harness_app
+
   main:
     web-application-type: none
     banner-mode: off
@@ -16,10 +18,25 @@ spring:
         think: false
         temperature: 0.2
         model: qwen3.5:4b
-
+#  ai:
+#    gigachat:
+#      auth:
+#        bearer:
+#          api-key: MDFhMWJiMTctYWE0NS03YzJhLTgxZjktNjZjYTFmMTEyY2JjOmQ3ZWQ5NzJiLWM0NDAtNDNhZi04YTVkLWRkM2FjN2FiNGRlYg==
+#        scope: GIGACHAT_API_PERS
+#      model:
+#        name: GigaChat-3-Ultra
+#        options:
+#          temperature: 0.2
+#          max-tokens: 4096
 logging:
   level:
     root: WARN
     org.maslowis: INFO
   pattern:
     console: "%msg%n"
+
+harness:
+  agent:
+    max-turns: 30
+    workspace-root: /home/ivan/Dev/Projects/spring_ai_harness

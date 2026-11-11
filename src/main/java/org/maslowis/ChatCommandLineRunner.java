@@ -20,7 +20,7 @@ public class ChatCommandLineRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        String input = getInput(args);
+        String input = getInput(new String[]{"Какая версия java в проекте? Ответь коротко!"});
         if (!input.isBlank()) {
             agent.run(input);
         }
@@ -28,8 +28,8 @@ public class ChatCommandLineRunner implements CommandLineRunner {
 
     private String getInput(String[] args) {
         return Stream.ofNullable(args)
-                .flatMap(Arrays::stream)
-                .filter(a -> a != null && !a.isBlank())
-                .collect(Collectors.joining("; "));
+                     .flatMap(Arrays::stream)
+                     .filter(a -> a != null && !a.isBlank())
+                     .collect(Collectors.joining("; "));
     }
 }
