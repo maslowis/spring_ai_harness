@@ -22,7 +22,7 @@ spring:
 #    gigachat:
 #      auth:
 #        bearer:
-#          api-key: MDFhMWJiMTctYWE0NS03YzJhLTgxZjktNjZjYTFmMTEyY2JjOmQ3ZWQ5NzJiLWM0NDAtNDNhZi04YTVkLWRkM2FjN2FiNGRlYg==
+#          api-key: [token]
 #        scope: GIGACHAT_API_PERS
 #      model:
 #        name: GigaChat-3-Ultra
@@ -38,5 +38,5 @@ logging:
 
 harness:
   agent:
-    max-turns: 30
+    max-turns: 20
     workspace-root: /home/ivan/Dev/Projects/spring_ai_harness

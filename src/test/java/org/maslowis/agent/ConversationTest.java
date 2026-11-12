@@ -4,12 +4,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.SystemMessage;
+import org.springframework.ai.chat.messages.ToolResponseMessage;
 import org.springframework.ai.chat.messages.UserMessage;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 
 class ConversationTest {
 
@@ -25,7 +25,7 @@ class ConversationTest {
     }
 
     @Test
-    void extracted() {
+    void testPromptMessagesMatchExpectedSequence() {
         Message[] expectedMessages = new Message[]{
                 new SystemMessage(SYSTEM_PROMPT),
                 new UserMessage("Hello"),
@@ -76,5 +76,61 @@ class ConversationTest {
         var secondAssistant = promptMessages.get(++idx);
         assertInstanceOf(AssistantMessage.class, secondAssistant);
         assertEquals("Java uses automatic garbage collection.", secondAssistant.getText());
+    }
+
+    @Test
+    void addUserMessageObjectAddsSameInstance() {
+        Conversation conversation = new Conversation(SYSTEM_PROMPT);
+        UserMessage userMessage = new UserMessage("Hi");
+
+        conversation.addUserMessage(userMessage);
+
+        List<Message> messages = conversation.toPromptMessages();
+        assertEquals(2, messages.size());
+        assertSame(userMessage, messages.get(1));
+    }
+
+    @Test
+    void addAssistantMessageAddsSameInstance() {
+        Conversation conversation = new Conversation(SYSTEM_PROMPT);
+        AssistantMessage assistantMessage = new AssistantMessage("Response");
+
+        conversation.addAssistantMessage(assistantMessage);
+
+        List<Message> messages = conversation.toPromptMessages();
+        assertEquals(2, messages.size());
+        assertSame(assistantMessage, messages.get(1));
+    }
+
+    @Test
+    void addToolResponseMessageAddsSameInstance() {
+        Conversation conversation = new Conversation(SYSTEM_PROMPT);
+        ToolResponseMessage toolResponseMessage = ToolResponseMessage.builder()
+                                                                     .responses(List.of())
+                                                                     .build();
+
+        conversation.addToolResponseMessage(toolResponseMessage);
+
+        List<Message> messages = conversation.toPromptMessages();
+        assertEquals(2, messages.size());
+        assertSame(toolResponseMessage, messages.get(1));
+    }
+
+    @Test
+    void toPromptMessagesReturnsIndependentList() {
+        Conversation conversation = new Conversation(SYSTEM_PROMPT);
+        conversation.addUserMessage("Hello");
+
+        List<Message> first = conversation.toPromptMessages();
+        List<Message> second = conversation.toPromptMessages();
+
+        assertNotSame(first, second);
+
+        // Modifying the returned list must not affect the conversation state.
+        first.clear();
+
+        List<Message> third = conversation.toPromptMessages();
+        assertEquals(2, third.size());
+        assertEquals("Hello", third.get(1).getText());
     }
 }

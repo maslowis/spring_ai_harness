@@ -55,5 +55,6 @@ tasks {
             showStandardStreams = true
             exceptionFormat = TestExceptionFormat.FULL
         }
+        System.getProperty("spring.profiles.active")?.let { systemProperty("spring.profiles.active", it) }
     }
 }

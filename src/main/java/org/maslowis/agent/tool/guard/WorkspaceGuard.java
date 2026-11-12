@@ -1,4 +1,4 @@
-package org.maslowis.tool.guard;
+package org.maslowis.agent.tool.guard;
 
 import org.maslowis.agent.AgentProperties;
 import org.springframework.stereotype.Component;

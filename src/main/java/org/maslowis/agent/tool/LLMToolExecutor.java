@@ -1,4 +1,4 @@
-package org.maslowis.tool;
+package org.maslowis.agent.tool;
 
 import org.maslowis.agent.event.AgentEvent;
 import org.springframework.ai.util.JsonHelper;
@@ -47,7 +47,7 @@ public class LLMToolExecutor {
         var result = invoke(tool, toolInput);
         eventPublisher.publishEvent(new AgentEvent.ToolCallEnd(toolName,
                                                                id,
-                                                               LLMToolResult.preview(result.content(), 200),
+                                                               LLMToolBase.preview(result.content()),
                                                                result.error(),
                                                                Duration.between(startTime, Instant.now())));
         return result;

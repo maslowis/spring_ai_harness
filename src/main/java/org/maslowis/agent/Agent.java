@@ -2,8 +2,8 @@ package org.maslowis.agent;
 
 import lombok.RequiredArgsConstructor;
 import org.maslowis.agent.event.AgentEvent;
-import org.maslowis.tool.LLMToolExecutor;
-import org.maslowis.tool.SpringToolCallbackAdapter;
+import org.maslowis.agent.tool.LLMToolExecutor;
+import org.maslowis.agent.tool.SpringToolCallbackAdapter;
 import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.ToolResponseMessage;
@@ -27,19 +27,11 @@ import java.util.Optional;
 public class Agent {
 
     public static final String SYS_PROMPT = """
-                                            You are a coding agent operating in a local repository. Work iteratively: inspect the repository, form a short plan, make minimal changes, run relevant checks, and repeat until the user's request is complete or you are blocked.
-                                            
-                                            Rules:
-                                            - Inspect relevant files before editing; do not invent code, APIs, or file contents.
-                                            - Use available tools when needed and prefer repository-local commands.
-                                            - Make focused, minimal changes that match the existing style and architecture.
-                                            - Preserve unrelated user changes. Do not overwrite or revert them.
-                                            - Run relevant tests, linters, or build commands when possible; report the results.
-                                            - Do not perform destructive actions (deleting data, force-pushing, resetting, rewriting history) unless explicitly requested.
-                                            - Do not commit, push, or open PRs unless explicitly requested.
-                                            - If requirements are ambiguous, ask a concise clarifying question. If you can proceed safely with a reasonable assumption, state it.
-                                            - Be concise in user-facing responses, but include what changed, how it was verified, and any remaining risks or blockers.
-                                            - Stop iterating when the task is solved and verified, or when you need user input. Do not loop indefinitely.
+                                            You are a coding agent that works in a local repository.
+                                            You have tools for inspecting the project. Use them instead of guessing:
+                                            if the user asks about a file, read it first, then answer from what you read.
+                                            Never claim you have seen a file that you did not read with a tool.
+                                            Answer concisely and logically!
                                             """;
 
     private final Conversation conversation = new Conversation(SYS_PROMPT);
