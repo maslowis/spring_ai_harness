@@ -1,6 +1,7 @@
 package org.maslowis.agent.tool.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.maslowis.agent.ContentUtils;
 import org.maslowis.agent.tool.IgnoredFiles;
 import org.maslowis.agent.tool.LLMToolBase;
 import org.maslowis.agent.tool.LLMToolResult;
@@ -29,7 +30,7 @@ public class GlobTool extends LLMToolBase<GlobTool.Input> {
 
     @Override
     public String name() {
-        return "glob";
+        return "Glob";
     }
 
     @Override
@@ -52,7 +53,7 @@ public class GlobTool extends LLMToolBase<GlobTool.Input> {
 
     @Override
     public LLMToolResult call(Input input) {
-        if (input == null || input.pattern == null || input.pattern.isBlank()) {
+        if (input == null || ContentUtils.isBlank(input.pattern)) {
             return LLMToolResult.error("File pattern empty");
         }
 
@@ -78,7 +79,7 @@ public class GlobTool extends LLMToolBase<GlobTool.Input> {
         }
 
         if (found.isEmpty()) {
-            return LLMToolResult.success("files not found by pattern: %s".formatted(input.pattern));
+            return LLMToolResult.success("Files not found by pattern: %s".formatted(input.pattern));
         }
 
         StringBuilder result = new StringBuilder();
@@ -86,7 +87,7 @@ public class GlobTool extends LLMToolBase<GlobTool.Input> {
              .limit(MAX_RESULTS)
              .forEach(f -> result.append(workspaceGuard.relativize(f)).append("\n"));
         if (found.size() > MAX_RESULTS) {
-            result.append("showed first %d files, specify pattern for less output".formatted(MAX_RESULTS));
+            result.append("Showed first %d files, specify pattern for less output".formatted(MAX_RESULTS));
         }
 
         return LLMToolResult.success(result.toString());

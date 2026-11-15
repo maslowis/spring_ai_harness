@@ -1,7 +1,7 @@
 package org.maslowis.agent.event;
 
+import org.maslowis.agent.ContentUtils;
 import org.maslowis.agent.console.Printer;
-import org.maslowis.agent.tool.LLMToolBase;
 import org.springframework.ai.chat.messages.MessageType;
 import org.springframework.boot.ansi.AnsiColor;
 import org.springframework.context.event.EventListener;
@@ -36,7 +36,7 @@ public class AgentEventListener {
 
         printSecondLine("TURN: %d".formatted(event.turn()),
                         "TOKEN: ~%d\nSYSTEM_PROMPT:\n%sCHAT_HISTORY:\n%s".formatted(tokens, sysPrompt, chatHistory.stream()
-                                                                                                                .map(LLMToolBase::preview)
+                                                                                                                .map(ContentUtils::preview)
                                                                                                                 .collect(Collectors.joining("\n"))),
                         AnsiColor.WHITE);
     }

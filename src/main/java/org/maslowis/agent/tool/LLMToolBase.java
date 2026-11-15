@@ -1,17 +1,12 @@
 package org.maslowis.agent.tool;
 
+import org.maslowis.agent.ContentUtils;
 import org.springframework.ai.util.JsonHelper;
 import org.springframework.ai.util.json.schema.JsonSchemaGenerator;
 
 public abstract class LLMToolBase<I> implements LLMTool<I> {
 
-    public static final int PREVIEW_MAX_LENGTH = 150;
     protected final JsonHelper json = new JsonHelper();
-
-    public static String preview(String content) {
-        String firstLine = content.lines().findFirst().orElse("");
-        return firstLine.length() <= PREVIEW_MAX_LENGTH ? firstLine : firstLine.substring(0, PREVIEW_MAX_LENGTH) + "...";
-    }
 
     @Override
     public boolean isReadOnly() {
@@ -23,7 +18,7 @@ public abstract class LLMToolBase<I> implements LLMTool<I> {
         if (input == null) {
             return "";
         }
-        return preview(json.toJson(input));
+        return ContentUtils.preview(json.toJson(input));
     }
 
     @Override

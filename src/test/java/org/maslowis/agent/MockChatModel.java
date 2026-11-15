@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
-public class MockChatModel implements ChatModel {
+class MockChatModel implements ChatModel {
 
     private final Deque<AssistantMessage> script = new ArrayDeque<>();
     private final List<Prompt> receivedPrompts = new ArrayList<>();

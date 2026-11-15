@@ -2,6 +2,7 @@ package org.maslowis.agent.tool.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.maslowis.agent.tool.LLMToolBase;
+import org.maslowis.agent.tool.LLMToolContext;
 import org.maslowis.agent.tool.LLMToolResult;
 import org.maslowis.agent.tool.guard.WorkspaceGuard;
 import org.maslowis.agent.tool.guard.WorkspaceViolationException;
@@ -23,10 +24,11 @@ public class ReadTool extends LLMToolBase<ReadTool.Input> {
     private static final int MAX_LINE_LENGTH = 2000;
 
     private final WorkspaceGuard workspaceGuard;
+    private final LLMToolContext context;
 
     @Override
     public String name() {
-        return "read";
+        return "Read";
     }
 
     @Override
@@ -69,6 +71,7 @@ public class ReadTool extends LLMToolBase<ReadTool.Input> {
         } catch (IOException e) {
             return LLMToolResult.error("Failed to read the file %s: %s".formatted(input.filePath, e.getMessage()));
         }
+        context.fileStateCache().save(pathToFile);
 
         if (lines.isEmpty()) {
             return LLMToolResult.success("File is empty");

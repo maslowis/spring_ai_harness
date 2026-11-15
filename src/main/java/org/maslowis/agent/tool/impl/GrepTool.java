@@ -1,6 +1,7 @@
 package org.maslowis.agent.tool.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.maslowis.agent.ContentUtils;
 import org.maslowis.agent.tool.IgnoredFiles;
 import org.maslowis.agent.tool.LLMToolBase;
 import org.maslowis.agent.tool.LLMToolResult;
@@ -29,7 +30,7 @@ public class GrepTool extends LLMToolBase<GrepTool.Input> {
 
     @Override
     public String name() {
-        return "grep";
+        return "Grep";
     }
 
     @Override
@@ -54,7 +55,7 @@ public class GrepTool extends LLMToolBase<GrepTool.Input> {
 
     @Override
     public LLMToolResult call(Input input) {
-        if (input == null || input.pattern == null || input.pattern.isBlank()) {
+        if (input == null || ContentUtils.isBlank(input.pattern)) {
             return LLMToolResult.error("Search pattern empty");
         }
 
@@ -108,7 +109,7 @@ public class GrepTool extends LLMToolBase<GrepTool.Input> {
                                    }
                                    var line = lines.get(i);
                                    if (regex.matcher(line).find()) {
-                                       var strip = preview(line.strip());
+                                       var strip = ContentUtils.preview(line.strip());
                                        matchesLine.append(i + 1).append("\t").append(strip).append("\n");
                                        count.incrementAndGet();
                                    }

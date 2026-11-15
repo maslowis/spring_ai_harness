@@ -54,6 +54,9 @@ tasks {
             events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED)
             showStandardStreams = true
             exceptionFormat = TestExceptionFormat.FULL
+            showExceptions = true
+            showCauses = true
+            showStackTraces = true
         }
         System.getProperty("spring.profiles.active")?.let { systemProperty("spring.profiles.active", it) }
     }
